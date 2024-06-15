@@ -4,39 +4,79 @@ class SongsHandler {
     this._service = service;
     this._validator = validator;
   
-    // this.postAlbumsHandler = this.postAlbumsHandler.bind(this);
-    // this.getAlbumsHandler = this.getAlbumsHandler.bind(this);
-    // this.getByIdAlbumsHandler = this.getByIdAlbumsHandler.bind(this);
-    // this.putAlbumsHandler = this.putAlbumsHandler.bind(this);
-    // this.deleteAlbumsHandler = this.deleteAlbumsHandler(this);
+    this.postSongHandler = this.postSongHandler.bind(this);
+    this.getSongsHandler = this.getSongsHandler.bind(this);
+    this.getByIdSongHandler = this.getByIdSongHandler.bind(this);
+    this.putSongHandler = this.putSongHandler.bind(this);
+    this.deleteSongHandler = this.deleteSongHandler.bind(this);
   }
   
-  //   async postAlbumsHandler(request, h) {
+  async postSongHandler(request, h) {
+    this._validator.validateAddSongPayload(request.payload);
+    const { title = 'untitled', year, genre, performer, duration, albumId  } = request.payload;
+
+    const songId = await this._service.addSong({ title, year, genre, performer, duration, albumId });
+
+    const response = h.response({
+      status: 'success',
+      message: 'Song berhasil ditambahkan',
+      data: {
+        songId,
+      },
+    });
+    response.code(201);
+    return response;
   
-  //   }
+  }
   
-  //   async getAlbumsHandler() {
-  //     const notes = await this._service.getNotes();
-  //     return {
-  //       status: 'success',
-  //       data: {
-  //         notes,
-  //       },
-  //     };
+  async getSongsHandler(request) {
+    const songs = await this._service.getSongs(request.query);
+    return {
+      status: 'success',
+      data: {
+        songs,
+      },
+    };
           
-  //   }
+  }
   
-  //   async getByIdAlbumsHandler(request, h) {
+  async getByIdSongHandler(request) {
+    const { id } = request.params;
+    const song = await this._service.getSongById(id);
+    return {
+      status: 'success',
+      data: {
+        song,
+      },
+    };
           
-  //   }
+  }
   
-  //   async putAlbumsHandler(request, h) {
+  async putSongHandler(request) {
+    this._validator.validateAddSongPayload(request.payload);
+    const { id } = request.params;
+
+
+    console.log(request.payload);
+    await this._service.editSongById(id, request.payload);
+
+    return {
+      status: 'success',
+      message: 'Song berhasil diperbarui',
+    };
           
-  //   }
+  }
   
-  //   async deleteAlbumsHandler(request, h) {
+  async deleteSongHandler(request) {
+    const { id } = request.params;
+    await this._service.deleteSongById(id);
+
+    return {
+      status: 'success',
+      message: 'Song berhasil dihapus',
+    };      
           
-  //   }
+  }
   
 }
   

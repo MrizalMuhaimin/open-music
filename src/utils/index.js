@@ -8,6 +8,16 @@ const mapAlbumsDBToModel = ({
   year: parseInt(year),
 });
 
+const mapSongsDBToModel = ({
+  id,
+  title,
+  performer,
+}) => ({
+  id,
+  title,
+  performer,
+});
+
 const mapSongDBToModel = ({
   id,
   title,
@@ -19,11 +29,11 @@ const mapSongDBToModel = ({
 }) => ({
   id,
   title,
-  year,
+  year: parseInt(year),
   genre,
   performer,
-  duration,
+  duration: parseInt(duration),
   albumId,
 });
   
-module.exports = { mapAlbumsDBToModel, mapSongDBToModel };
+module.exports = { mapAlbumsDBToModel, mapSongDBToModel, mapSongsDBToModel };

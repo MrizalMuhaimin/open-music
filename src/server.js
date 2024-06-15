@@ -8,11 +8,17 @@ const albums = require('./api/albums');
 const AlbumsService = require('./services/postgres/AlbumsService');
 const AlbumsValidator = require('./validator/albums');
 
+const songs = require('./api/songs');
+const SongsService = require('./services/postgres/SongsService');
+const SongsValidator = require('./validator/songs');
+
+
 const ClientError = require('./exceptions/ClientError');
 
 
 const init = async () => {
   const albumsService = new AlbumsService();
+  const songsService = new SongsService();
   const server = Hapi.server({
     port: process.env.PORT,
     host: process.env.HOST,
@@ -24,13 +30,22 @@ const init = async () => {
         
   });
 
-  await server.register({
-    plugin: albums,
-    options: {
-      service: albumsService,
-      validator: AlbumsValidator,
+  await server.register([
+    {
+      plugin: albums,
+      options: {
+        service: albumsService,
+        validator: AlbumsValidator,
+      },
     },
-  });
+    {
+      plugin: songs,
+      options: {
+        service: songsService,
+        validator: SongsValidator,
+      },
+    }
+  ]);
 
   server.ext('onPreResponse', (request, h) => {
     const { response } = request;
@@ -45,6 +60,15 @@ const init = async () => {
       return newResponse;
     }
 
+    // penanganan server error.
+    // if(response?.output?.payload?.statusCode === 500){
+    //   const newResponse = h.response({
+    //     status: 'error',
+    //     message: response.output.payload.message,
+    //   });
+    //   newResponse.code(500);
+    //   return newResponse;
+    // }
 
     return h.continue;
 

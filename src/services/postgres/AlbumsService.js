@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const { mapAlbumsDBToModel } = require('../../utils');
+const { mapAlbumsDBToModel, mapSongsDBToModel } = require('../../utils');
 
 class AlbumsService {
   constructor() {
@@ -22,7 +22,7 @@ class AlbumsService {
     const result = await this._pool.query(query);
 
     if (!result.rows[0].id) {
-      throw new InvariantError('Catatan gagal ditambahkan');
+      throw new InvariantError('Album gagal ditambahkan');
     }
 
     return result.rows[0].id;
@@ -41,10 +41,21 @@ class AlbumsService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('Album  tidak ditemukan');
+      throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows.map(mapAlbumsDBToModel)[0];
+    const querySongs = {
+      text: 'SELECT * FROM songs WHERE album_id = $1',
+      values: [id],
+    };
+
+    const resultSongs = await this._pool.query(querySongs);
+    const songs = resultSongs.rows.map(mapSongsDBToModel);
+
+    const response = result.rows.map(mapAlbumsDBToModel)[0];
+    response['songs'] = songs;
+
+    return response;
 
   }
 
