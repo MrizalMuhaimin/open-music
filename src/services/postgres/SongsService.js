@@ -57,17 +57,14 @@ class SongsService {
   }
 
   async editSongById (id, { title, year, genre, performer, duration, albumId }) {
-    console.log('albumId', albumId)
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id',
       values: [title, year.toString(), genre, performer, duration.toString(),albumId, updatedAt, id],
     };
 
-    console.log(query)
     const result = await this._pool.query(query);
 
-    console.log(result)
 
     if (!result.rows.length) {
       throw new NotFoundError('Gagal memperbarui song. Id tidak ditemukan');
