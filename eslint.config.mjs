@@ -15,6 +15,7 @@ export default [
         'error',
         'single'
       ],
+      'no-underscore-dangle': 'off',
     }
   },
   pluginJs.configs.recommended,
