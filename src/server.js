@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
 
 const albums = require('./api/albums');
 const AlbumsService = require('./services/postgres/AlbumsService');
@@ -21,6 +22,10 @@ const AuthenticationsService = require('./services/postgres/AuthenticationsServi
 const AuthenticationsValidator = require('./validator/authentications');
 const TokenManager = require('./tokenize/TokenManager');
 
+const playlist = require('./api/playlist');
+const PlaylistService = require('./services/postgres/PlaylistService');
+const PlaylistValidator = require('./validator/playlist');
+
 
 const ClientError = require('./exceptions/ClientError');
 
@@ -29,6 +34,7 @@ const init = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
+  const playlistService = new PlaylistService();
   const authenticationsService = new AuthenticationsService()
   const server = Hapi.server({
     port: process.env.PORT,
@@ -39,6 +45,30 @@ const init = async () => {
       },
     },
         
+  });
+
+  // registrasi plugin eksternal
+  await server.register([
+    {
+      plugin: Jwt,
+    },
+  ]);
+
+  // mendefinisikan strategy autentikasi jwt
+  server.auth.strategy('openmusicapp_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
   });
 
   await server.register([
@@ -64,6 +94,13 @@ const init = async () => {
       },
     },
     {
+      plugin: playlist,
+      options: {
+        service: playlistService,
+        validator: PlaylistValidator,
+      },
+    },
+    {
       plugin: authentications,
       options: {
         authenticationsService,
@@ -86,16 +123,6 @@ const init = async () => {
       newResponse.code(response.statusCode);
       return newResponse;
     }
-
-    // penanganan server error.
-    // if(response?.output?.payload?.statusCode === 500){
-    //   const newResponse = h.response({
-    //     status: 'error',
-    //     message: response.output.payload.message,
-    //   });
-    //   newResponse.code(500);
-    //   return newResponse;
-    // }
 
     return h.continue;
 

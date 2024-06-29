@@ -35,5 +35,29 @@ const mapSongDBToModel = ({
   duration: parseInt(duration),
   albumId,
 });
+
+const mapPlaylistActivitiesDBToModel = ({
+  id,
+  username,
+  title,
+  action,
+  time
+}) => ({
+  id,
+  username,
+  title,
+  action,
+  time
+});
+
+const mapPlaylistDBToModel = ({
+  id,
+  name,
+  owner,
+}) => ({
+  id,
+  name,
+  username: owner,
+});
   
-module.exports = { mapAlbumsDBToModel, mapSongDBToModel, mapSongsDBToModel };
+module.exports = { mapAlbumsDBToModel, mapSongDBToModel, mapSongsDBToModel, mapPlaylistActivitiesDBToModel, mapPlaylistDBToModel };
