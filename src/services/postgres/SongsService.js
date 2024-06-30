@@ -56,6 +56,17 @@ class SongsService {
 
   }
 
+  async verifySongById(id) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Songs tidak ditemukan');
+    }
+  }
+
   async editSongById (id, { title, year, genre, performer, duration, albumId }) {
     const updatedAt = new Date().toISOString();
     const query = {

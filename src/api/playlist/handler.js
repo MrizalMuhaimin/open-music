@@ -12,7 +12,6 @@ class PlaylistHandler {
   async postPlaylistHandler(request, h) {
     this._validator.validatePlaylistPayload(request.payload);
     const { name = 'untitled' } = request.payload;
-    console.log(request.auth);
     const { id: owner } = request.auth.credentials;
 
     const playlistId = await this._service.addPlaylist({ name, owner });
