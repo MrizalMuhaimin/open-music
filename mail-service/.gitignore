@@ -1,0 +1,15 @@
+# Node artifact files
+node_modules/
+dist/
+
+.env
+.prod.env
+package-lock.json
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
