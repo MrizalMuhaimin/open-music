@@ -5,7 +5,7 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 const { mapPlaylistDBToModel } = require('../../utils');
 
-class PlyalistService {
+class PlaylistService {
   constructor(collaborationsService) {
     this._pool = new Pool();
     this._collaborationService = collaborationsService;
@@ -126,4 +126,4 @@ class PlyalistService {
   }
 }
 
-module.exports = PlyalistService;
+module.exports = PlaylistService;

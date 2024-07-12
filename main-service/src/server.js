@@ -40,6 +40,10 @@ const playlistActivities = require('./api/playlistActivities');
 const PlaylistActivitiesService = require('./services/postgres/PlaylistActivitiesService');
 const PlaylistActivitiesValidator = require('./validator/playlist_activities');
 
+// Exports
+const _exports = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
 
 const ClientError = require('./exceptions/ClientError');
 
@@ -155,6 +159,14 @@ const init = async () => {
         service: playlistActivitiesService,
         playlistService: playlistService,
         validator: PlaylistActivitiesValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        service: ProducerService,
+        playlistService: playlistService,
+        validator: ExportsValidator,
       },
     },
   ]);

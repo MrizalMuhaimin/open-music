@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const nodemailer = require('nodemailer');
 
 class MailSender {
@@ -5,7 +6,7 @@ class MailSender {
     this._transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: true,
+      // secure: true,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -14,14 +15,15 @@ class MailSender {
   }
 
   sendEmail(targetEmail, content) {
+    const date = new Date();
     const message = {
-      from: 'Notes Apps',
+      from: 'Open Music Apps',
       to: targetEmail,
-      subject: 'Ekspor Catatan',
-      text: 'Terlampir hasil dari ekspor catatan',
+      subject: 'Ekspor Playlist',
+      text: `Terlampir hasil dari ekspor Playlist: ${date}`,
       attachments: [
         {
-          filename: 'notes.json',
+          filename: `playlist-${date}.json`,
           content,
         },
       ],
