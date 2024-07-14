@@ -1,15 +1,15 @@
-"# open-music" 
+"# open-music"
 
+run project:
 
-setup project:
-npm init --y
-npm install nodemon --save-dev
-npm install eslint --save-dev
-npx eslint --init
-npm install @hapi/hapi
+[first]
 
-npm install pg
-npm install dotenv
-npm install joi
-npm install nanoid
-npm install node-pg-migrate
+cd main-service
+npm i
+npm run start:dev
+[second]
+
+cd mail-service
+npm i
+npm run start:dev
+[note] : need run redis and rabbitMQ
