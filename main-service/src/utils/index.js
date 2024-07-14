@@ -1,10 +1,13 @@
+/* eslint-disable no-undef */
 const mapAlbumsDBToModel = ({
   id,
   name,
+  cover,
   year,
 }) => ({
   id,
   name,
+  coverUrl: cover ? `http://${process.env.HOST}:${process.env.PORT}/upload/images/${cover}`: cover,
   year: parseInt(year),
 });
 
