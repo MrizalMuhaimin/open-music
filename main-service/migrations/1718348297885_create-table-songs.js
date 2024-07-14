@@ -19,7 +19,7 @@ exports.up = (pgm) => {
       notNull: true,
     },
     year: {
-      type: 'TlEXT',
+      type: 'TEXT',
       notNull: true,
     },
     genre: {
